@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http:www.thymeleaf.org">
+
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/css/common/common.css">
+    <link rel="stylesheet" type="text/css" href="/css/common/common_list.css">
+    <link rel="stylesheet" type="text/css" href="/css/apps/order_list.css">
+    <script src="/js/lib/jquery-3.4.1.min.js"></script>
+    <script src="/js/lib/prototype.js"></script>
+    <script src="/js/common/common_process.js"></script>
+    <script type="text/javascript">
+      window.onload = function () {
+        // 日付フォーマット整形
+        CommonProcess.formatTimestamp( $('listDisplay'), '.js-td_create-ts', 'yyyy/MM/dd hh時mm分');
+        CommonProcess.formatOrderId ( $("listDisplay"), '.js-td_order-id', 11);
+      };
+
+      var shippingInstructions = function() {
+
+        var url = '/rest/order_ship';
+        var type = 'GET';
+        var dataType = 'html';
+        var contetType = 'application/json';
+        var dataType = 'html';
+        CommonProcess.doAjax(url, type, dataType, contetType, dataType, function(result) {
+          $("shipmentMsg").innerHTML = result;
+        });
+      };
+    </script>
+
+  </head>
+
+  <body class="list-contents">
+    <h3 class="list-contents__form__header">注文一覧</h3>
+    <p id="shipmentMsg"></p>
+    <input type="button" class="order-list_button--shipping-instructions" onclick="shippingInstructions()" value="出荷指示">
+
+    <p class="list-contents__p--exclusion-control-error" th:if="${error != null}" th:text="${error}"></p>
+
+    <table class="list-contents__table">
+
+      <thead class="list-contents__table-header">
+        <tr class="list-contents__table-header__tr">
+          <th class="list-contents__table-header__tr__td">受注ID</th>
+          <th class="list-contents__table-header__tr__td">顧客名</th>
+          <th class="list-contents__table-header__tr__td">注文ステータス</th>
+          <th class="list-contents__table-header__tr__td">出荷完了日</th>
+          <th class="list-contents__table-header__tr__td">顧客電話番号</th>
+          <th class="list-contents__table-header__tr__td">注文作成日</th>
+        </tr>
+      </thead>
+
+      <tbody id="listDisplay" class="list-contents__table-body">
+        <tr class="list-contents__table-body__tr" th:each="order_list : *{orderList}" onclick='CommonProcess.selectRowData(this, "js-primary_id");'>
+          <td class="list-contents__table-body__tr__td js-td_order-id" th:text="${order_list.get('order_id')}"><input type="hidden" class="js-primary_id" name="orderId" th:value="${ '/order/save/' + order_list.get('order_id')}" /></td>
+          <td class="list-contents__table-body__tr__td" th:text="${order_list.get('first_name')} + ' ' + ${order_list.get('last_name')} "/>
+          <td class="list-contents__table-body__tr__td" th:switch="${order_list.get('order_status')}">
+            <p th:case="10">出荷準備中</p>
+            <p th:case="20">出荷完了</p>
+          </td>
+          <td class="list-contents__table-body__tr__td" th:text="${order_list.get('shipping_date')}"/>
+          <td class="list-contents__table-body__tr__td" th:text="${order_list.get('tell_number')}"/>
+          <td class="list-contents__table-body__tr__td js-td_create-ts" th:text="${order_list.get('create_ts')}"/>
+        </tr>
+      </tbody>
+
+    </table>
+    <br />
+
+    <input class="list-contents__input" type="button" onclick="location.href='/menu'" value="戻る" />
+    <br />
+  </body>
+
+</html>

@@ -1,0 +1,48 @@
+<configuration>
+
+  <!-- 変数LOG_DIRに./logsを設定 -->
+  <property name="LOG_DIR" value="././logs" />
+
+
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${LOG_DIR}/stock_transaction.log</file>
+
+    <!-- ログローテーションの設定、 fileNamePattern:ローテーション期間を指定、maxHistory:ログファイル最大保持日数設定 -->
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${LOG_DIR}/stock_transaction.%d{yyyy-MM-dd}.log</fileNamePattern>
+      <maxHistory>10</maxHistory>
+    </rollingPolicy>
+
+    <!-- 出力フォーマットを指定 -->
+    <encoder>
+      <pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+    </encoder>
+
+  </appender>
+
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+
+    <encoder>
+      <pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+    </encoder>
+
+  </appender>
+
+
+  <logger name="org.hibernate.SQL" level="DEBUG" additivity="false">
+    <appender-ref ref="STDOUT" />
+    <appender-ref ref="FILE" />
+  </logger>
+
+  <!-- additivity rootを継承しない -->
+  <logger name="org.hibernate.type" level="DEBUG" additivity="false">
+    <appender-ref ref="STDOUT" />
+    <appender-ref ref="FILE" />
+  </logger>
+
+  <root level="info">
+    <appender-ref ref="STDOUT" />
+  </root>
+
+</configuration>

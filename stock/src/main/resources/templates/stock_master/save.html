@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http:www.thymeleaf.org">
+
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/css/common/common.css">
+    <link rel="stylesheet" type="text/css" href="/css/common/common_list.css">
+    <script src="/js/lib/prototype.js"></script>
+    <script src="/js/common/common_process.js"></script>
+  </head>
+
+
+  <body class="save-contents">
+
+    <h3 class="save-contents__header">在庫登録画面</h3>
+
+    <label for="productCode">商品コード</label>
+    <input class="save-contents__text--disabled" type="text" id="productCode" name="productCode" th:value="${productMaster.productCode}" disabled="disabled" />
+    <br />
+
+    <label for="productName">商品名</label>
+    <input class="save-contents__text--disabled" type="text" id="productName" name="productName" th:value="${productMasterHistory.productName}" disabled="disabled" />
+    <br />
+
+    <form class="save-contents__form" action="/stock_master/save" method="post">
+
+      <input type="hidden" id="stockId" name="stockId" th:value="${stockData.stockId}" />
+      <input type="hidden" id="productId" name="productId" th:value="${productMaster.productId}" />
+
+      <label for="actualStockNumber">実在庫数</label>
+      <input type="text" id="actualStockNumber" name="actualStockNumber" th:value="${stockData.actualStockNumber}" />
+      <span class="save-contents__form__param--err" th:if="${actualStockNumberError != null}" th:text="${actualStockNumberError}"></span>
+      <br />
+
+      <label for="futureShippedStockNumber">在庫出荷予定数</label>
+      <input style="background-color: #dcdcdc;" type="text" id="futureShippedStockNumber" name="futureShippedStockNumber" th:value="${stockData.futureShippedStockNumber}" readonly="readonly" />
+      <span class="save-contents__form__param--err" th:if="${futureShippedStockNumberError != null}" th:text="${futureShippedStockNumberError}"></span>
+      <br />
+
+      <label for="standardStockNumber">基準在庫数</label>
+      <input type="text" id="standardStockNumber" name="standardStockNumber" th:value="${stockData.standardStockNumber}" />
+      <span class="save-contents__form__param--err" th:if="${standardStockNumberError != null}" th:text="${standardStockNumberError}"></span>
+      <br />
+
+      <input type="hidden" id="createTs" name="createTs" th:value="${stockData.createTs}" />
+      <input type="hidden" id="lastModifiedTs" name="lastModifiedTs" th:value="${stockData.lastModifiedTs}" />
+
+      <input type="submit" name="registStock" value="登録" />
+    </form>
+
+    <input type="button" onclick="location.href='/stock_master/list'" value="戻る" />
+  </body>
+
+</html>

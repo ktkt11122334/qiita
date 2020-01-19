@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http:www.thymeleaf.org">
+
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/css/common/common.css">
+    <link rel="stylesheet" type="text/css" href="/css/common/common_list.css">
+  </head>
+
+  <body class="save-contents">
+
+    <h3 class="save-contents__header">税率登録画面</h3>
+    <form class="save-contents__form" action="/tax_master/save" method="post" th:object="${tax}">
+
+      <input type="hidden" id="taxId" name="taxId" th:value="*{taxId}" />
+
+      <label for="taxRate">税率</label>
+      <input type="text" id="taxRate" name="taxRate" th:value="*{taxRate}" /><span>%</span>
+      <span class="save-contents__form__param--err" th:if="${taxRateError != null}" th:text="${taxRateError}"></span>
+      <br />
+
+      <label for="fromChangeDate">税率変更日</label>
+      <input type="date" id="fromChangeDate" name="fromChangeDate" th:value="*{fromChangeDate}" />
+      <span class="save-contents__form__param--err" th:if="${fromChangeDateError != null}" th:text="${fromChangeDateError}"></span>
+      <br />
+
+      <input type="hidden" id="createTs" name="createTs" th:value="*{createTs}" />
+      <input type="hidden" id="lastModifiedTs" name="lastModifiedTs" th:value="*{lastModifiedTs}" />
+
+
+      <input type="submit" name="registTax" value="登録" />
+    </form>
+
+    <input type="button" onclick="location.href='/tax_master/list'" value="戻る" />
+  </body>
+
+</html>

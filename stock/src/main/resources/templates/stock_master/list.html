@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http:www.thymeleaf.org">
+
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/css/common/common.css">
+    <link rel="stylesheet" type="text/css" href="/css/common/common_list.css">
+    <script src="/js/lib/prototype.js"></script>
+    <script src="/js/common/common_process.js"></script>
+    <script type="text/javascript">
+      window.onload = function () {
+        // 日付フォーマット整形
+        CommonProcess.formatTimestamp( $("listDisplay"), '.js-td_create-ts', 'yyyy/MM/dd hh時mm分');
+        CommonProcess.formatTimestamp( $("listDisplay"), '.js-td_last-modified-ts', 'yyyy/MM/dd hh時mm分' );
+
+        // 在庫不足の警告メッセージ処理
+        var listRows = $('listDisplay').getElementsBySelector('.js-list-contents__table-body__tr');
+        var listActualStockNumbers = $('listDisplay').getElementsBySelector('.js-td_actual-stock-number');
+        var listFutureShippedStockNumbers = $('listDisplay').getElementsBySelector('.js-td_future-shipped-stock-number');
+        var listStandardStockNumbers = $('listDisplay').getElementsBySelector('.js-td_standard-stock-number');
+
+        for ( var i = 0; i < listRows.length; i++ ) {
+          var actualStockNumber = parseInt( listActualStockNumbers[i].getAttribute('value') );
+          var standardStockNumber = parseInt( listStandardStockNumbers[i].getAttribute('value') );
+          var futureShippedStockNumber = parseInt( listFutureShippedStockNumbers[i].getAttribute('value') );
+
+          // 実在庫数 < 基準在庫数 : 青色警告
+          if ( actualStockNumber < standardStockNumber )
+            listRows[i].style.backgroundColor = '#8EB8FF';
+
+          // 実在庫数 < 出荷予定在庫数 : 赤色警告
+          if ( actualStockNumber < futureShippedStockNumber )
+            listRows[i].style.backgroundColor = '#FF66CC';
+        }
+      };
+    </script>
+
+  </head>
+
+  <body class="list-contents">
+
+    <form class="list-contents__form" action="/stock_master/list" method="post" th:object="${searchProductStockObject}">
+      <h3 class="list-contents__form__header">在庫検索</h3>
+
+      <ul class="list-contents__form__ul">
+        <li class="list-contents__form__ul__li">
+          <label for="searchProductCode">商品コード</label>
+          <input type="text" id="searchProductCode" name="searchProductCode" th:value="*{searchProductCode}">
+        </li>
+        <li class="list-contents__form__ul__li">
+          <label for="searchProductName">商品名</label>
+          <input type="text" id="searchProductName" name="searchProductName" th:value="*{searchProductName}">
+        </li>
+      </ul>
+
+      <input type="submit" value="在庫一覧検索">
+    </form>
+    <br />
+    <br />
+
+    <p class="list-contents__p--exclusion-control-error" th:if="${error != null}" th:text="${error}"></p>
+
+
+    <table class="list-contents__table">
+
+      <thead class="list-contents__table-header">
+        <tr class="list-contents__table-header__tr">
+          <th class="list-contents__table-header__tr__td">商品コード</th>
+          <th class="list-contents__table-header__tr__td">商品名</th>
+          <th class="list-contents__table-header__tr__td">実在庫数</th>
+          <th class="list-contents__table-header__tr__td">在庫出荷予定数</th>
+          <th class="list-contents__table-header__tr__td">基準在庫数</th>
+          <th class="list-contents__table-header__tr__td">在庫作成日時</th>
+          <th class="list-contents__table-header__tr__td">在庫更新日時</th>
+        </tr>
+      </thead>
+
+      <tbody id="listDisplay" class="list-contents__table-body">
+        <tr class="list-contents__table-body__tr js-list-contents__table-body__tr" th:each="product_stock_list : *{productStockList}" onclick='CommonProcess.selectRowData(this, "js-primary_id");'>
+          <td class="list-contents__table-body__tr__td list-contents__table-body__tr__td--hidden"><input type="hidden" class="js-primary_id" name="productId" th:value="${ '/stock_master/save/' + product_stock_list.get('product_id')}" /></td>
+          <td class="list-contents__table-body__tr__td" th:text="${product_stock_list.get('product_code')}"/>
+          <td class="list-contents__table-body__tr__td" th:text="${product_stock_list.get('product_name')}"/>
+          <td class="list-contents__table-body__tr__td js-td_actual-stock-number" th:text="${product_stock_list.get('actual_stock_number')}" th:value="${product_stock_list.get('actual_stock_number')}" />
+          <td class="list-contents__table-body__tr__td js-td_future-shipped-stock-number" th:text="${product_stock_list.get('future_shipped_stock_number')}" th:value="${product_stock_list.get('future_shipped_stock_number')}" />
+          <td class="list-contents__table-body__tr__td js-td_standard-stock-number" th:text="${product_stock_list.get('standard_stock_number')}" th:value="${product_stock_list.get('standard_stock_number')}" />
+          <td class="list-contents__table-body__tr__td js-td_create-ts" th:text="${product_stock_list.get('create_ts')}"/>
+          <td class="list-contents__table-body__tr__td js-td_last-modified-ts" th:text="${product_stock_list.get('last_modified_ts')}"/>
+        </tr>
+      </tbody>
+
+    </table>
+    <br />
+
+    <input class="list-contents__input" type="button" onclick="location.href='/menu'" value="戻る" />
+  </body>
+
+</html>

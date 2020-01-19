@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http:www.thymeleaf.org">
+
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/css/common/common.css">
+    <link rel="stylesheet" type="text/css" href="/css/common/common_list.css">
+    <script src="/js/lib/prototype.js"></script>
+    <script src="/js/common/common_process.js"></script>
+    <script type="text/javascript">
+      window.onload = function () {
+        // サーバーレスポンスから現在のチェックボックスの状態を反映
+        CommonProcess.changeCheckboxCondition( $("searchDisableFlg") );
+        // 日付フォーマット整形
+        CommonProcess.formatTimestamp( $("listDisplay"), ".js-td_create-ts", "yyyy/MM/dd hh時mm分");
+        CommonProcess.formatTimestamp( $("listDisplay"), ".js-td_last-modified-ts", "yyyy/MM/dd hh時mm分" );
+      };
+    </script>
+
+  </head>
+
+  <body class="list-contents">
+
+    <form class="list-contents__form" action="/product_master/list" method="post" th:object="${searchProductMasterObject}">
+      <h3 class="list-contents__form__header">商品検索</h3>
+
+      <ul class="list-contents__form__ul">
+        <li class="list-contents__form__ul__li">
+          <label for="searchProductCode">商品コード</label>
+          <input type="text" id="searchProductCode" name="searchProductCode" th:value="*{searchProductCode}">
+        </li>
+        <li class="list-contents__form__ul__li">
+          <label for="searchJancode">Jancode</label>
+          <input type="text" id="searchJancode" name="searchJancode" th:value="*{searchJancode}">
+        </li>
+        <li class="list-contents__form__ul__li">
+          <label for="searchProductName">商品名</label>
+          <input type="text" id="searchProductName" name="searchProductName" th:value="*{searchProductName}">
+        </li>
+        <li class="list-contents__form__ul__li">
+          <label for="searchTaxRate">税率</label>
+          <select id="searchTaxRate" name="searchTaxRate" th:value="*{searchTaxRate}">
+            <option th:selected="${searchProductMasterObject.searchTaxRate == null}"></option>
+            <option th:each="tax : ${tax}"
+                    th:value="${tax.taxRate}"
+                    th:selected="${searchProductMasterObject.searchTaxRate == tax.taxRate}"
+                    th:text="${tax.taxRate}" />
+          </select>
+        </li>
+        <li class="list-contents__form__ul__li">
+          <label for="searchDisableFlg">削除済み商品を表示</label>
+          <input type="checkbox" id="searchDisableFlg" name="searchDisableFlg" th:value="*{searchDisableFlg}" onclick="this.value=(this.checked)?true:false;">
+        </li>
+      </ul>
+
+      <input type="submit" value="商品一覧検索">
+    </form>
+    <br />
+    <br />
+
+    <p class="list-contents__p--exclusion-control-error" th:if="${error != null}" th:text="${error}"></p>
+
+
+    <table class="list-contents__table">
+
+      <thead class="list-contents__table-header">
+        <tr class="list-contents__table-header__tr">
+          <th class="list-contents__table-header__tr__td">商品コード</th>
+          <th class="list-contents__table-header__tr__td">Jancode</th>
+          <th class="list-contents__table-header__tr__td">商品名</th>
+          <th class="list-contents__table-header__tr__td">設定価格</th>
+          <th class="list-contents__table-header__tr__td">税率</th>
+          <th class="list-contents__table-header__tr__td">税率変更日</th>
+          <th class="list-contents__table-header__tr__td">税率削除フラグ</th>
+          <th class="list-contents__table-header__tr__td">商品マスタ作成日時</th>
+          <th class="list-contents__table-header__tr__td">商品マスタ更新日時</th>
+          <th class="list-contents__table-header__tr__td">商品使用設定</th>
+        </tr>
+      </thead>
+
+      <tbody id="listDisplay" class="list-contents__table-body">
+        <tr class="list-contents__table-body__tr" th:each="product_list : *{productList}" onclick='CommonProcess.selectRowData(this, "js-primary_id");'>
+          <td class="list-contents__table-body__tr__td list-contents__table-body__tr__td--hidden"><input type="hidden" class="js-primary_id" name="productId" th:value="${ '/product_master/save/' + product_list.get('product_id')}" /></td>
+          <td class="list-contents__table-body__tr__td" th:text="${product_list.get('product_code')}"/>
+          <td class="list-contents__table-body__tr__td" th:text="${product_list.get('jancode')}"/>
+          <td class="list-contents__table-body__tr__td" th:text="${product_list.get('product_name')}"/>
+          <td class="list-contents__table-body__tr__td" th:text="${product_list.get('price')}"/>
+          <td class="list-contents__table-body__tr__td" th:text="${product_list.get('tax_rate')}"/>
+          <td class="list-contents__table-body__tr__td" th:text="${product_list.get('from_change_date')}"/>
+          <td class="list-contents__table-body__tr__td" th:text="${product_list.get('tax_disable_flg') ? '削除済み' : '未削除' }" />
+          <td class="list-contents__table-body__tr__td js-td_create-ts" th:text="${product_list.get('create_ts')}"/>
+          <td class="list-contents__table-body__tr__td js-td_last-modified-ts" th:text="${product_list.get('last_modified_ts')}"/>
+<!--      ***### Map<String, Object>型で取得するとパース例外が発生するため、日時はjsで整形する
+          <td th:text="${ #temporals.format( product_list.get('create_ts'), 'yyyy/MM/dd HH時mm分') }"/>
+          <td th:text="${ #temporals.format( product_list.get('last_modified_ts'), 'yyyy/MM/dd HH時mm分') }"/> -->
+          <td class="list-contents__table-body__tr__td" th:text="${product_list.get('disable_flg') ? '未使用' : '使用中' }" />
+        </tr>
+      </tbody>
+
+    </table>
+    <br />
+
+    <input class="list-contents__input" type="button" onclick="location.href='/product_master/create'" value="新規登録" />
+    <input class="list-contents__input" type="button" onclick="location.href='/menu'" value="戻る" />
+  </body>
+
+</html>
