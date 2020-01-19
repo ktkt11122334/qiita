@@ -1,0 +1,13 @@
+@charset "utf-8";
+
+/* 商品選択一覧のフォーマット */
+.create-contents .create-contents__form-select-product {
+  margin: 10px;
+}
+
+.create-contents .create-contents__form-select-product table,
+.create-contents .create-contents__form-select-product th,
+.create-contents .create-contents__form-select-product td {
+  border: 1px solid black;
+}
+

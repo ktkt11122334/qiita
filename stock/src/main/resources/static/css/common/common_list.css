@@ -1,0 +1,50 @@
+@charset "utf-8";
+
+/* リスト内容表示画面 */
+.list-contents .list-contents__form .list-contents__form__ul {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+}
+
+.list-contents .list-contents__form .list-contents__form__ul .list-contents__form__ul__li {
+  margin: 0px 10px;
+}
+
+.list-contents .list-contents__table {
+  border-collapse: collapse;
+}
+
+.list-contents__table-body__tr:hover {
+  cursor: pointer;
+  background-color: #adff2f;
+}
+
+.list-contents .list-contents__table .list-contents__table-body .list-contents__table-body__tr--click-prohibition:hover {
+  background-color: #adff2f;
+}
+
+.list-contents .list-contents__table .list-contents__table-header__tr__td,
+.list-contents .list-contents__table .list-contents__table-body__tr__td {
+  border: 1px darkgray solid;
+  padding: 2px;
+}
+
+.list-contents .list-contents__table .list-contents__table-body .list-contents__table-body__tr__td--hidden {
+  display: none;
+}
+
+
+.list-contents__p--exclusion-control-error {
+  color: red;
+}
+
+
+/* リスト内容登録・編集画面 */
+.save-contents .save-contents__text--disabled {
+  background-color: #dcdcdc;
+}
+
+.save-contents__form__param--err {
+  color: red;
+}

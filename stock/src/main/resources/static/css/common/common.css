@@ -1,0 +1,39 @@
+@charset "utf-8";
+
+/* インプット テキストのフォーカス・枠をなくす */
+.common__input-not-focus {
+  border: none;
+  outline: none;
+}
+
+/* 更新フォームの入力チェックエラー */
+.save-contents__form__param--err {
+  color: red;
+}
+
+/* 一覧選択時のマウスオーバー動作 */
+.list-contents__table-body__tr:hover {
+  cursor: pointer;
+  background-color: #adff2f;
+}
+
+.list__table__thead,
+.list__table__tbody {
+  display:block;
+}
+
+.list__table__tbody {
+	overflow-x:hidden;
+  overflow-y:scroll;
+  height:180px;
+}
+
+.width180 {
+  width: 180px;
+}
+.width100 {
+  width: 100px;
+}
+.width50 {
+  width: 50px;
+}

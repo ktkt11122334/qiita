@@ -1,0 +1,15 @@
+@charset "utf-8";
+
+.order-list_button--shipping-instructions {
+  height: 60px;
+  width: 200px;
+  -webkit-appearance: none;
+  font-size: x-large;
+  background-color: deepskyblue;
+  border-color: black;
+  border-width: 4px;
+  border-radius: 20px;
+  margin: 10px;
+  outline: none;
+  cursor: pointer;
+}

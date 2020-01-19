@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http:www.thymeleaf.org">
+
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/css/common/common.css">
+    <link rel="stylesheet" type="text/css" href="/css/common/common_list.css">
+    <script src="/js/lib/prototype.js"></script>
+    <script src="/js/common/common_process.js"></script>
+    <script type="text/javascript">
+      window.onload = function () {
+        CommonProcess.formatOrderId ( $("listDisplay"), '.js-td_order-id', 11);
+      };
+    </script>
+
+  </head>
+
+  <body class="list-contents">
+	  <h3 class="list-contents__form__header">在庫消費一覧</h3>
+	  <br />
+
+    <table class="list-contents__table">
+
+      <thead class="list-contents__table-header">
+        <tr class="list-contents__table-header__tr">
+          <th class="list-contents__table-header__tr__td">注文Id</th>
+          <th class="list-contents__table-header__tr__td">在庫消費日</th>
+          <th class="list-contents__table-header__tr__td">在庫消費数</th>
+          <th class="list-contents__table-header__tr__td">消費商品名</th>
+          <th class="list-contents__table-header__tr__td">商品コード</th>
+        </tr>
+      </thead>
+
+      <tbody id="listDisplay" class="list-contents__table-body">
+        <tr class="list-contents__table-body__tr js-list-contents__table-body__tr" th:each="stock_consumption_list : *{stockConsumptions}">
+          <td class="list-contents__table-body__tr__td js-td_order-id" th:text="${stock_consumption_list.get('order_id')}" />
+          <td class="list-contents__table-body__tr__td" th:text="${stock_consumption_list.get('consumption_date')}" />
+          <td class="list-contents__table-body__tr__td" th:text="${stock_consumption_list.get('consumption_product_number')}" />
+          <td class="list-contents__table-body__tr__td" th:text="${stock_consumption_list.get('product_name')}" />
+          <td class="list-contents__table-body__tr__td" th:text="${stock_consumption_list.get('product_code')}" />
+      </tbody>
+
+    </table>
+    <br />
+
+    <input class="list-contents__input" type="button" onclick="location.href='/menu'" value="戻る" />
+  </body>
+
+</html>

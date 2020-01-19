@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http:www.thymeleaf.org">
+
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/css/common/common.css">
+    <link rel="stylesheet" type="text/css" href="/css/common/common_list.css">
+    <script src="/js/lib/prototype.js"></script>
+    <script src="/js/common/common_process.js"></script>
+
+  </head>
+
+  <body class="list-contents">
+    <h3 class="list-contents__header">税率一覧</h3>
+
+    <p class="list-contents__p--exclusion-control-error" th:if="${error != null}" th:text="${error}"></p>
+
+    <table class="list-contents__table">
+
+      <thead class="list-contents__table-header">
+        <tr class="list-contents__table-header__tr">
+          <th class="list-contents__table-header__tr__td">税率</th>
+          <th class="list-contents__table-header__tr__td">税率変更日</th>
+          <th class="list-contents__table-header__tr__td">税率マスタ作成日時</th>
+          <th class="list-contents__table-header__tr__td">税率マスタ更新日時</th>
+          <th class="list-contents__table-header__tr__td">削除</th>
+        </tr>
+      </thead>
+
+      <tbody class="list-contents__table-body">
+      <!-- 設計変更より、税率の編集を出来なくする→税率の変更によって以前は何パーセントかかっていたかのバックログが確認できなくなるため -->
+<!--         <tr class="list-contents__table-body__tr" th:each="tax_list : *{taxList}"  onclick='CommonProcess.selectRowData(this, "js-primary_id")'> -->
+        <tr class="list-contents__table-body__tr--click-prohibition" th:each="tax_list : *{taxList}">
+          <td class="list-contents__table-body__tr__td list-contents__table-body__tr__td--hidden"><input class="js-primary_id" type="hidden" name="taxId" th:value="${ '/tax_master/save/' + tax_list.taxId}" /></td>
+          <td class="list-contents__table-body__tr__td" th:text="${tax_list.taxRate + '%'}"/>
+          <td class="list-contents__table-body__tr__td" th:text="${#temporals.format(tax_list.fromChangeDate, 'yyyy/MM/dd')}"/>
+          <td class="list-contents__table-body__tr__td" th:text="${#temporals.format(tax_list.createTs, 'yyyy/MM/dd HH時mm分')}"/>
+          <td class="list-contents__table-body__tr__td" th:text="${#temporals.format(tax_list.lastModifiedTs, 'yyyy/MM/dd HH時mm分')}"/>
+          <td class="list-contents__table-body__tr__td" ><button th:value="${ '/tax_master/delete/' + tax_list.taxId}" onclick='CommonProcess.deleteRowData(this)' >削除</button></td>
+        </tr>
+      </tbody>
+
+    </table>
+    <br />
+
+    <input class="list-contents__input" type="button" onclick="location.href='/tax_master/create'" value="新規登録" />
+    <input class="list-contents__input" type="button" onclick="location.href='/menu'" value="戻る" />
+  </body>
+
+</html>

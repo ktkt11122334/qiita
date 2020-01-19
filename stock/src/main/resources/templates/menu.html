@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http:www.thymeleaf.org">
+
+  <head>
+    <meta charset="UTF-8">
+  </head>
+
+  <body>
+    <h2>メニュー画面</h2>
+
+    <ul th:each="menu : ${menus}">
+       <li><a th:href="${menu.path}" th:text="${menu.displayName}"></a></li>
+    </ul>
+  </body>
+
+</html>

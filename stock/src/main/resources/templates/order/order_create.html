@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http:www.thymeleaf.org">
+
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/css/common/common.css">
+    <link rel="stylesheet" type="text/css" href="/css/apps/order_create.css">
+    <script src="/js/lib/jquery-3.4.1.min.js"></script>
+    <script src="/js/lib/prototype.js"></script>
+    <script src="/js/common/common_process.js"></script>
+    <script src="/js/apps/app_base/base.js"></script>
+    <script src="/js/apps/order/order_create.js"></script>
+    <script type="text/javascript">
+      var createOrderInstance = new Class$OrderCreate();
+    </script>
+  </head>
+
+  <body class="create-contents">
+    <h2 class="create-contents__header">注文作成画面</h2>
+
+    <input class="create-contents__input" type="button" onclick="location.href='/menu'" value="戻る" />
+    <form class="create-contents__form" action="/order/save" method="post">
+
+      <h3 class="create-contents__form__header">顧客情報入力</h3>
+
+      <ul class="create-contents__form__ul">
+        <li class="create-contents__form__ul__li">
+          <label for="createFirstName">顧客名(姓)</label>
+          <input type="text" id="createFirstName" name="customer.createFirstName" th:value="${customer.createFirstName}">
+          <span class="save-contents__form__param--err" th:if="${createFirstNameError != null}" th:text="${createFirstNameError}"></span>
+        </li>
+        <li class="create-contents__form__ul__li">
+          <label for="createLastName">顧客名(名)</label>
+          <input type="text" id="createLastName" name="customer.createLastName" th:value="${customer.createLastName}">
+          <span class="save-contents__form__param--err" th:if="${createLastNameError != null}" th:text="${createLastNameError}"></span>
+        </li>
+        <li class="create-contents__form__ul__li">
+          <label for="createTellNumber">電話番号</label>
+          <input type="text" id="createTellNumber" name="customer.createTellNumber" th:value="${customer.createTellNumber}">
+          <span class="save-contents__form__param--err" th:if="${createTellNumberError != null}" th:text="${createTellNumberError}"></span>
+        </li>
+        <li class="create-contents__form__ul__li">
+          <label for="createPostalCode">郵便番号</label>
+          <input type="text" id="createPostalCode" name="customer.createPostalCode" th:value="${customer.createPostalCode}">
+          <span class="save-contents__form__param--err" th:if="${createPostalCodeError != null}" th:text="${createPostalCodeError}"></span>
+        </li>
+        <li class="create-contents__form__ul__li">
+          <label for="createFirstAddress">住所(都道府県-区/市-丁/番/号)</label>
+          <input type="text" id="createFirstAddress" name="customer.createFirstAddress" th:value="${customer.createFirstAddress}">
+          <span class="save-contents__form__param--err" th:if="${createFirstAddressError != null}" th:text="${createFirstAddressError}"></span>
+        </li>
+        <li class="create-contents__form__ul__li">
+          <label for="createLastAddress">住所(アパート/マンション/"なし"と記入)</label>
+          <input type="text" id="createLastAddress" name="customer.createLastAddress" th:value="${customer.createLastAddress}">
+          <span class="save-contents__form__param--err" th:if="${createLastAddressError != null}" th:text="${createLastAddressError}"></span>
+        </li>
+        <li class="create-contents__form__ul__li">
+          <label for="createMailAddress">メールアドレス</label>
+          <input type="text" id="createMailAddress" name="customer.createMailAddress" th:value="${customer.createMailAddress}">
+          <span class="save-contents__form__param--err" th:if="${createMailAddressError != null}" th:text="${createMailAddressError}"></span>
+        </li>
+      </ul>
+      <br />
+      <br />
+
+
+      <h3 class="create-contents__form__header">商品選択</h3><br />
+      <label for="searchProductCode">商品コード</label>
+      <input type="text" id="searchProductCode" />
+      <label for="searchProductName">商品名</label>
+      <input type="text" id="searchProductName" />
+      <input type="button" value="商品一覧検索" onclick="createOrderInstance.searchProductList();">
+
+	    <div class="create-contents__form-select-product">
+	      <table class="create-contents__form-select-product__table list__table">
+	        <thead class="list__table__thead">
+	          <tr>
+	            <th class="width180">商品名</th>
+	            <th class="width180">商品コード</th>
+	            <th class="width100">合計金額</th>
+	            <th class="width100">単価</th>
+	            <th class="width50">税率</th>
+	          </tr>
+	        </thead>
+
+	        <tbody id="selectProductTableBody" class="create-contents__form-select-product__table__tbody list__table__tbody">
+	          <tr class="create-contents__form-select-product__table__tbody__tr list-contents__table-body__tr" th:each="product_list : *{productList}" onclick="createOrderInstance.setPurchaseProduct(this);">
+	            <td class="js-select-table--product-name width180" th:text="${product_list.get('product_name')}" th:value="${product_list.get('product_name')}"/>
+	            <td class="js-select-table--product-code width180" th:text="${product_list.get('product_code')}" th:value="${product_list.get('product_code')}"/>
+	            <td class="js-select-table--total-price width100" th:text="${ product_list.get('price') + ( product_list.get('price') * product_list.get('tax_rate') * 0.01 ) }"
+	                th:value="${ product_list.get('price') + ( product_list.get('price') * product_list.get('tax_rate') * 0.01 ) }"  />
+	            <td class="js-select-table--price width100" th:text="${product_list.get('price')}" th:value="${product_list.get('price')}"/>
+	            <td class="js-select-table--tax-rate width50" th:text="${product_list.get('tax_rate')}" th:value="${product_list.get('tax_rate')}"/>
+	            <td style="display: none;" class="js-select-table--product-id" th:text="${product_list.get('product_id')}" th:value="${product_list.get('product_id')}"/>
+	            <td style="display: none;" class="js-select-table--product-last-modified-ts" th:text="${product_list.get('last_modified_ts')}" th:value="${product_list.get('last_modified_ts')}" />
+	          </tr>
+	        </tbody>
+	      </table>
+      </div>
+      <br />
+      <br />
+
+
+      <h3 class="create-contents__form__header">購入商品確認</h3>
+      <span class="save-contents__form__param--err" th:if="${registrationErrMsg != null}" th:text="${registrationErrMsg}"></span>
+      <span class="save-contents__form__param--err" th:if="${createPurchaseProductError != null}" th:text="${createPurchaseProductError}"></span>
+      <table>
+        <thead>
+          <tr>
+            <th>商品名</th>
+            <th>商品コード</th>
+            <th>購入数</th>
+            <th>金額</th>
+          </tr>
+        </thead>
+        <tbody id="purchaseProductSettings">
+          <tr th:each="purchase_product, stat : *{orderDetails}">
+            <td><input type="text" class="common__input-not-focus" th:name="'orderDetails[' + ${stat.index} + '].createProductName'" th:value="${purchase_product.createProductName}" th:number="${stat.index}" readonly/></td>
+            <td><input type="text" class="common__input-not-focus" th:name="'orderDetails[' + ${stat.index} + '].createProductCode'" th:value="${purchase_product.createProductCode}" th:number="${stat.index}" readonly/></td>
+            <td>
+              <input type="text" class="js-input__purchase-product-number" th:name="'orderDetails[' + ${stat.index} + '].createPurchaseNumber'" th:value="${purchase_product.createPurchaseNumber}" th:number="${stat.index}" onChange="createOrderInstance.recalculateTotalPrice();" /><br />
+              <!-- tx:textの変数内に変数を埋め込む方法不明 th:text="${'createPurchaseNumberError[' + stat.index + ']'}"のような形でエラーメッセージが出力されない
+              <span class="save-contents__form__param--err" th:if="${'createPurchaseNumberError[' + stat.index + ']' != null}" th:text="購入数を設定してください。"></span>
+              -->
+              <span class="save-contents__form__param--err" th:if="${purchase_product.createPurchaseNumberErr}" th:text="${createPurchaseNumberError}"></span>
+            </td>
+            <td><input type="text" class="common__input-not-focus js-input__purchase-product-price" th:name="'orderDetails[' + ${stat.index} + '].createTotalPrice'" th:value="${purchase_product.createTotalPrice}" th:number="${stat.index}" readonly/></td>
+            <td style="display: none;"><input type="text" class="common__input-not-focus js-input__purchase-product-id" th:name="'orderDetails[' + ${stat.index} + '].createProductId'" th:value="${purchase_product.createProductId}" th:number="${stat.index}" readonly/></td>
+            <td style="display: none;"><input type="text" class="common__input-not-focus" th:name="'orderDetails[' + ${stat.index} + '].createProductLastModifiedTs'" th:value="${purchase_product.createProductLastModifiedTs}" th:number="${stat.index}" readonly/></td>
+            <td><button type="button" onclick="createOrderInstance.removeTargetProduct(this)">削除</button></td>
+          </tr>
+
+        <!-- ****メモ:この記述方法でコントローラーで値が取得できることを確認済み -->
+<!--           <tr th:each="purchase_product : *{orderDetail}">
+            <td><input type="text" name="orderDetails[0].createProductName" th:value="${purchase_product.createProductName}" /></td>
+            <td class="js-set--product-code"/>
+            <td><input type="text" name="orderDetails[0].createPurchaseNumber" th:value="${purchase_product.createPurchaseNumber}" /></td>
+            <td class="js-set--product-total-price"/>
+            <td style="display: none;"><input type="text" name="orderDetails[0].createProductId" th:value="${purchase_product.createProductId}" /></td>
+            <td style="display: none;"><input type="text" name="orderDetails[0].createLastModifiedTs" th:value="${purchase_product.createLastModifiedTs}" /></td>
+          </tr> -->
+        </tbody>
+      </table>
+      <br />
+
+      <ul class="create-contents__form__ul">
+        <li class="create-contents__form__ul__li">
+          <label for="createOrderPrice">合計金額</label>
+          <input type="text" class="common__input-not-focus" id="createOrderPrice" name="orderHeader.createOrderPrice" th:value="${orderHeader.createOrderPrice}" readonly/>
+          <span class="save-contents__form__param--err" th:if="${createOrderPriceError != null}" th:text="${createOrderPriceError}"></span>
+        </li>
+      </ul>
+
+      <input class="create-contents__form__input" type="submit" value="注文確定">
+    </form>
+    <br />
+    <br />
+
+  </body>
+
+</html>
