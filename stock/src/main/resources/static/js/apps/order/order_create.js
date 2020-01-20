@@ -68,7 +68,12 @@ Class$OrderCreate = Class.create(Class$Base, {
     var purchaseProductEachTotalPrice = $('purchaseProductSettings').getElementsBySelector('.js-input__purchase-product-price');
 
     var purchaseProductRowData = purchaseProductNumber.length;
-    if ( purchaseProductRowData == 0 ) return;
+
+    // 購入商品全件削除で合計金額を初期化
+    if ( purchaseProductRowData == 0 ) {
+      $('createOrderPrice').setAttribute("value", 0);
+      return;
+    }
 
 
 
