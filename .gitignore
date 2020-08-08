@@ -1,0 +1,10 @@
+.DS_Store
+*.class
+*.jar
+.recommenders
+.metadata
+.git
+.classpath
+.project
+.settings
+
